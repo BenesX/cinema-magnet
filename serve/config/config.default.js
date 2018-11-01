@@ -7,7 +7,11 @@ module.exports = appInfo => {
   config.keys = appInfo.name + '_1540977031823_4949';
 
   // add your config here
-  config.middleware = [];
+  config.middleware = ['errorHandler'];
+
+  config.dyttReptileSite = 'http://www.dytt8.net';
+
+  config.xh127ReptileSite = 'http://www.xh127.com'
 
   return config;
 };
