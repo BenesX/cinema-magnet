@@ -44,6 +44,7 @@ class MovieService extends Service {
             const movie_ftp = $zoom.find('table a').eq(0).text();
             movie_list.push({ movie_post, movie_desc, movie_magnet, movie_ftp })
         };
+        movie_list = movie_list.filter(item => item.movie_magnet != '')
         return movie_list;
     }
 
@@ -59,7 +60,6 @@ class MovieService extends Service {
         let supereneArr = []
         for (let i = 0; i < links.length; i++) {
             supereneArr.push(this.ctx.helper.loadSuperagent(links[i]));
-            console.log(links[i])
             if((i !== 0 && i%2 == 0) || i === links.length - 1) {
                 const res = await Promise.all(supereneArr);
                 res.map(item => {
@@ -75,7 +75,7 @@ class MovieService extends Service {
                 supereneArr = [];
             }
         }
-        // movie_list = movie_list.filter(item => item.movie_magnet != '')
+        movie_list = movie_list.filter(item => item.movie_magnet != '')
         return movie_list;
     }
 }
