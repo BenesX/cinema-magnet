@@ -12,5 +12,9 @@ module.exports = {
                 }
             })
         })
+    },
+    getQueryString (url, name) {
+        var reg = new RegExp("(^|\\?|&)" + name + "=([^&]*)(\\s|&|$)", "i");
+        if (reg.test(url)) return RegExp.$2.replace(/\+/g, " ");
     }
 }

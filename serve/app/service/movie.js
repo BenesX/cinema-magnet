@@ -21,8 +21,10 @@ class MovieService extends Service {
     }
 
     async animation (page) {
-        const url = `${this.config.xh127ReptileSite}/thread-19-${page}`;
-        const res = await this._searchXh127(url);
+        // const url = `${this.config.xh127ReptileSite}/thread-19-${page}`;
+        // const res = await this._searchXh127(url);
+        const url = `${this.config.movieDogReptileSite}/list/9/2/${page}/`;
+        const res = await this._searchMovieDog(url);
         return res;
     }
 
@@ -30,8 +32,8 @@ class MovieService extends Service {
         const res = await this.ctx.helper.loadSuperagent(url);
         const $ = cheerio.load(res.text)
         const links = []
-        const movie_list = []
-        $('.co_content8 table a').each(function (i, n) {
+        let movie_list = []
+        $('.co_content8 ul a').each(function (i, n) {
             links.push($(n).attr('href'));
         });
         for (let i = 0; i < links.length; i++) {
@@ -44,7 +46,7 @@ class MovieService extends Service {
             const movie_ftp = $zoom.find('table a').eq(0).text();
             movie_list.push({ movie_post, movie_desc, movie_magnet, movie_ftp })
         };
-        movie_list = movie_list.filter(item => item.movie_magnet != '')
+        movie_list = movie_list.filter(item => item.movie_magnet)
         return movie_list;
     }
 
@@ -52,7 +54,7 @@ class MovieService extends Service {
         const res = await this.ctx.helper.loadSuperagent(url);
         const $ = cheerio.load(res.text)
         const links = []
-        const movie_list = []
+        let movie_list = []
         $('.thread_posts_list .subject .title').each((i, m) => {
             links.push($(m).find('a').eq(0).attr('href'));
         })
@@ -60,7 +62,7 @@ class MovieService extends Service {
         let supereneArr = []
         for (let i = 0; i < links.length; i++) {
             supereneArr.push(this.ctx.helper.loadSuperagent(links[i]));
-            if((i !== 0 && i%2 == 0) || i === links.length - 1) {
+            if((i !== 0 && i%2 === 0) || i === links.length - 1) {
                 const res = await Promise.all(supereneArr);
                 res.map(item => {
                     const $ = cheerio.load(item.text);
@@ -75,7 +77,37 @@ class MovieService extends Service {
                 supereneArr = [];
             }
         }
-        movie_list = movie_list.filter(item => item.movie_magnet != '')
+        movie_list = movie_list.filter(item => item.movie_magnet)
+        return movie_list;
+    }
+
+    async _searchMovieDog (url) {
+        const res = await this.ctx.helper.loadSuperagent(url);
+        const $ = cheerio.load(res.text);
+        const links = [];
+        let movie_list = [];
+        $('.listbox .listbox-entry .entry h2 a').each((i, m) => {
+            links.push($(m).attr('href'));
+        })
+        let supereneArr = []
+        for (let i = 0; i < links.length; i++) {
+            supereneArr.push(this.ctx.helper.loadSuperagent(links[i]));
+            if ((i !== 0 && i % 5 === 0) || i === links.length - 1) {
+                const res = await Promise.all(supereneArr);
+                res.map(item => {
+                    const $ = cheerio.load(item.text);
+                    const $zoom = $('.textbox-content');
+                    const movie_post = $zoom.find('img').eq(0).attr('src');
+                    let descArr = $zoom.html().match(/<\/center>(.+)<br><img/);
+                    const movie_desc = descArr && descArr[1] || '';
+                    const fid = this.ctx.helper.getQueryString($zoom.find('.quote-content').find('a').eq(0).attr('href'), 'fid');
+                    const movie_magnet = `${this.config.movieDogReptileSite}/attachment.php?fid=${fid}`;
+                    movie_list.push({ movie_post, movie_magnet, movie_desc })
+                })
+                supereneArr = [];
+            }
+        }
+        movie_list = movie_list.filter(item => item.movie_magnet && item.movie_post.indexOf('http') !== -1);
         return movie_list;
     }
 }
