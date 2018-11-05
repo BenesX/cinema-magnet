@@ -19,7 +19,6 @@ var getImageData = function (img, loaded) {
         imgObj.crossOrigin = "Anonymous";
 
     imgObj.onload = function () {
-        console.log('===')
         var context = getContext(imgObj.width, imgObj.height);
         context.drawImage(imgObj, 0, 0);
 
