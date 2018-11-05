@@ -5,7 +5,7 @@ export const AXIOS_DEFAULT_CONFIG = {
     timeout: 20000,
     maxContentLength: 2000,
     headers: {},
-    baseURL: NODE_ENV === 'production' ? window.G_BASE_URL : '/api'
+    baseURL: NODE_ENV === 'production' ? window.G_BASE_URL : 'http://localhost:7001/'
 }
 export const CONSOLE_REQUEST_ENABLE = NODE_ENV !== 'production' // 开启请求参数打印
 export const CONSOLE_RESPONSE_ENABLE = NODE_ENV !== 'production' // 开启响应参数打印

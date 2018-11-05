@@ -9,7 +9,10 @@ module.exports = (option, app) => {
         const movieList = await service.cache.get(key);
         if (movieList && movieList.length > 0) {
             ctx.body = {
-                res: JSON.parse(movieList)
+                res: JSON.parse(movieList),
+                success: true,
+                page: moviePage,
+                type: movieType
             };
             return;
         }

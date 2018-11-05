@@ -33,7 +33,7 @@ class MovieService extends Service {
         const $ = cheerio.load(res.text)
         const links = []
         let movie_list = []
-        $('.co_content8 ul a').each(function (i, n) {
+        $('.co_content8 ul a:last-child').each(function (i, n) {
             links.push($(n).attr('href'));
         });
         for (let i = 0; i < links.length; i++) {
@@ -41,12 +41,19 @@ class MovieService extends Service {
             const $ = cheerio.load(cres.text);
             const $zoom = $('#Zoom');
             const movie_post = $zoom.find('img').eq(0).attr('src');
-            const movie_desc = $zoom.find('p').eq(0).text();
+            let desc_html = '';
+            if ($zoom.find('p').length > 0) {
+                desc_html = $zoom.find('p').html();
+            } else {
+                desc_html = $zoom.find('span').html();
+            }
+            let handleDesc = desc_html.split('<br>').filter(item => item.indexOf('img') === -1 && item !== '');
+            const movie_desc = handleDesc.join('<br>');
             const movie_magnet = $zoom.find('p').eq(0).find('a').attr('href');
             const movie_ftp = $zoom.find('table a').eq(0).text();
-            movie_list.push({ movie_post, movie_desc, movie_magnet, movie_ftp })
+            movie_list.push({ movie_post, movie_desc, movie_magnet, movie_ftp });
         };
-        movie_list = movie_list.filter(item => item.movie_magnet)
+        movie_list = movie_list.filter(item => item.movie_magnet || item.movie_ftp)
         return movie_list;
     }
 
@@ -98,7 +105,7 @@ class MovieService extends Service {
                     const $ = cheerio.load(item.text);
                     const $zoom = $('.textbox-content');
                     const movie_post = $zoom.find('img').eq(0).attr('src');
-                    let descArr = $zoom.html().match(/<\/center>(.+)<br><img/);
+                    let descArr = $zoom.html().match(/<\/center>(.+)<div class="quote downloadbox">/);
                     const movie_desc = descArr && descArr[1] || '';
                     const fid = this.ctx.helper.getQueryString($zoom.find('.quote-content').find('a').eq(0).attr('href'), 'fid');
                     const movie_magnet = `${this.config.movieDogReptileSite}/attachment.php?fid=${fid}`;

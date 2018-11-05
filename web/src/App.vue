@@ -11,9 +11,9 @@
                     <h1>Moive</h1>
                 </div>
                 <div class="m-content-list">
-                    <movie-list @showInfo="showInfo" :isShowInfo="isShowing"/>
+                    <movie-list @showInfo="showInfo" :isShowInfo="isShowing" :movie-list="currMovieList"/>
                 </div>
-                <movie-info :isShow="isShowing" class="m-con-info"></movie-info>
+                <movie-info :isShow="isShowing" :movie-info="movieInfo" class="m-con-info"></movie-info>
             </div>
         </div> 
     </div>
@@ -21,6 +21,8 @@
 
 <script>
 import HorseImg from './assets/img/horse2.jpeg'
+import RGBaster from './utils/rgb';
+import { getBase64 } from './utils';
 import Header from '@/components/Header-Comp'
 import MovieList from '@/components/Movie-List-Comp'
 import MovieInfo from '@/components/movie-Info-Comp'
@@ -30,6 +32,8 @@ export default {
     data () {
         return {
             horseImg: HorseImg,
+            currMovieList: [],
+            movieInfo: {},
             opa: 0,
             bgImg: '',
             isShowing: false,
@@ -37,7 +41,16 @@ export default {
             isImgBoxActive: false
         }
     },
+    created () {
+        this.reqMovieList()
+    },
     methods: {
+        async reqMovieList () {
+            const res = await this.$api.IndexService.getMovieList('jpan', 2)
+            if (res.res) {
+                this.currMovieList = res.res
+            }
+        },
         t () {
             this.isImgBoxActive = true
         },
@@ -45,7 +58,18 @@ export default {
             this.isImgBoxActive = false
         },
         showInfo (item) {
-            this.bgImg = item.imgUrl
+            this.bgImg = item.movie_post
+            this.movieInfo = item
+            RGBaster.colors(this.bgImg, {
+                success: function(payload) {
+                    // payload.dominant是主色，RGB形式表示
+                    // payload.secondary是次色，RGB形式表示
+                    // payload.palette是调色板，含多个主要颜色，数组
+                    console.log(payload.dominant);
+                    console.log(payload.secondary);
+                    console.log(payload.palette);
+                }
+                });
             setTimeout(() => {
                 this.isShowing = true
             }, 200)

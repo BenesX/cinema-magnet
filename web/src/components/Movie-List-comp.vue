@@ -1,10 +1,10 @@
 <template>
     <div class="m-list">
         <div style="width: 100%;overflow-x:scroll;flex: 1;display: flex;padding: 40px 0;">
-            <div v-for="(item, index) in swiperItem" :key="item.text">
+            <div v-for="(item, index) in movieList" :key="item.movie_magnet">
                 <div
                   :class="[currentIndex === index && 'm-movie-item-active', currentIndex != '' && currentIndex < index && 'slideToRight', currentIndex != '' && currentIndex > index && 'slideToLeft']" 
-                  class="m-movie-item" :style="{background: `url(${item.imgUrl})`, backgroundSize: 'cover'}" 
+                  class="m-movie-item" :style="{background: `url(${item.movie_post})`, backgroundSize: 'cover'}" 
                   @click="showInfo(item, index)"
                 />
             </div>
@@ -20,50 +20,10 @@ import horse from '../assets/img/horse.jpg';
 
 export default {
     name: "movie-list",
-    props: ['isShowInfo'],
+    props: ['isShowInfo', 'movieList'],
     data () {
         return {
-            currentIndex: '',
-            swiperItem: [
-                {
-                    imgUrl: horse2,
-                    text: '狼的孩子雨和雪'
-                },
-                {
-                    imgUrl: horse,
-                    text: '狼的孩子雨和雪'
-                },
-                {
-                    imgUrl: horse2,
-                    text: '狼的孩子雨和雪'
-                },
-                {
-                    imgUrl: horse2,
-                    text: '狼的孩子雨和雪'
-                },
-                {
-                    imgUrl: horse2,
-                    text: '狼的孩子雨和雪'
-                },
-
-                {
-                    imgUrl: horse2,
-                    text: '狼的孩子雨和雪'
-                },
-                {
-                    imgUrl: horse2,
-                    text: '狼的孩子雨和雪'
-                },
-                {
-                    imgUrl: horse2,
-                    text: '狼的孩子雨和雪'
-                },
-                {
-                    imgUrl: horse2,
-                    text: '狼的孩子雨和雪'
-                },
-                
-            ]
+            currentIndex: ''
         }
     },
     components: {
