@@ -1,20 +1,19 @@
 import { CONSOLE_REQUEST_ENABLE, CONSOLE_RESPONSE_ENABLE } from '../index'
 import qs from 'qs'
-import loadingComp from '@/components/loading-comp'
 import Vue from 'vue'
 
-const LoadingContrutor = Vue.extend(loadingComp)
-let vm
+// const LoadingContrutor = Vue.extend(loadingComp)
+// let vm
 
 export function requestSuccessFunc (requestObj) {
-    if (!vm && requestObj.loading) {
-        vm = new LoadingContrutor().$mount()
-        vm.$on('toggelShow', function (val) {
-            vm.visable = val
-        })
-        document.body.appendChild(vm.$el)
-    }
-    if (requestObj.loading) vm.loading()
+    // if (!vm && requestObj.loading) {
+    //     vm = new LoadingContrutor().$mount()
+    //     vm.$on('toggelShow', function (val) {
+    //         vm.visable = val
+    //     })
+    //     document.body.appendChild(vm.$el)
+    // }
+    // if (requestObj.loading) vm.loading()
     if (CONSOLE_REQUEST_ENABLE) {
         console.groupCollapsed('Request Task')
         console.info(requestObj.url)
@@ -36,7 +35,7 @@ export function requestFailFunc (requestError) {
 export function responseSuccessFunc (responseObj) {
     // 自定义响应成功逻辑，全局拦截接口，根据不同业务做不同处理，响应成功监控等
     // CONSOLE_RESPONSE_ENABLE && console.info('responseSuccessFunc', responseObj)
-    if (responseObj.config.loading) vm.complete()
+    // if (responseObj.config.loading) vm.complete()
     if (CONSOLE_RESPONSE_ENABLE) {
         console.groupCollapsed('Reponse Task')
         console.info(responseObj.config.url)
@@ -47,6 +46,6 @@ export function responseSuccessFunc (responseObj) {
     return resData
 }
 export function responseFailFunc (responseError) {
-    if (vm) vm.complete()
+    // if (vm) vm.complete()
     return Promise.reject(responseError)
 }

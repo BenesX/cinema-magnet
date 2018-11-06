@@ -5,33 +5,36 @@
         </div>
         <div class="m-nav">
             <ul>
-                <li class="active">
-                    <a href="">最新电影</a>
+                <li 
+                  v-for="item in movieTypeList" 
+                  :key="item.type"
+                  :class="movieType === item.type && 'active'"
+                  @click="setMovieType(item.type)"
+                >
+                    <a>{{ item.desc }}</a>
                 </li>
-                <li>
-                    <a href="">日韩</a>
-                </li>
-                <li>
-                    <a href="">港片</a>
-                </li>
-                <li>
-                    <a href="">动画</a>
-                </li>
-            </ul>
-            <div class="m-nav-close" @click="close">X</div>
+            </ul>   
         </div>
     </div>
 </template>
 
 <script>
+import { MOVIE_TYPE_LIST } from '@/config/config.site';
+
 export default {
     name: 'Header',
+    props: ['movieType'],
+    data () {
+        return {
+            movieTypeList: MOVIE_TYPE_LIST,
+        }
+    },
     created () {
-
+        this.setMovieType(this.movieTypeList[0].type)
     },
     methods: {
-        close () {
-            this.$emit('close')
+        setMovieType (type) {
+            this.$emit('switchMovieType', { movieType: type })
         }
     }
 }
@@ -53,14 +56,6 @@ export default {
     display: flex;
     flex: 2;
     position: relative;
-    .m-nav-close {
-        position: absolute;
-        top: 2px;
-        right: 10px;
-        font-weight: 800;
-        font-size: 20px;
-        cursor: pointer;
-    }
 }
 .m-nav ul {
     flex: 1;
@@ -69,6 +64,9 @@ export default {
     li {
         flex: 1;
         text-align: center;
+        a {
+            cursor: pointer;
+        }
         &.active {
             font-weight: bold;
         }

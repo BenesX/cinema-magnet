@@ -1,7 +1,7 @@
 <template>
     <div class="m-list">
-        <div style="width: 100%;overflow-x:scroll;flex: 1;display: flex;padding: 40px 0;">
-            <div v-for="(item, index) in movieList" :key="item.movie_magnet">
+        <div style="width: 100%;overflow-x:scroll;flex: 1;display: flex;padding: 40px 0;" @scroll="scroll">
+            <div v-for="(item, index) in movieList" :key="item.movie_magnet + index">
                 <div
                   :class="[currentIndex === index && 'm-movie-item-active', currentIndex != '' && currentIndex < index && 'slideToRight', currentIndex != '' && currentIndex > index && 'slideToLeft']" 
                   class="m-movie-item" :style="{background: `url(${item.movie_post})`, backgroundSize: 'cover'}" 
@@ -13,10 +13,7 @@
 </template>
 
 <script>
-import { swiper, swiperSlide } from 'vue-awesome-swiper'
-import 'swiper/dist/css/swiper.css'
-import horse2 from '../assets/img/horse2.jpeg';
-import horse from '../assets/img/horse.jpg';
+import { throttle } from '../utils';
 
 export default {
     name: "movie-list",
@@ -25,9 +22,6 @@ export default {
         return {
             currentIndex: ''
         }
-    },
-    components: {
-        swiper, swiperSlide
     },
     computed: {
         swiper() {
@@ -40,6 +34,17 @@ export default {
         }
     },
     methods: {
+        scroll (e) {
+            throttle (this.handleScroll, 500, e)
+        },
+        handleScroll (e) {
+            const target = e.target
+            const containerWidth = (this.movieList.length - 1) * 320
+            console.log(target.scrollLeft, containerWidth)
+            if (target.scrollLeft >= containerWidth) { 
+                this.$emit('reachRigth')
+            }
+        },
         showInfo (item, index) {
             this.$emit('showInfo', item)
             this.scaleToHide(index)

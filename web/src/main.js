@@ -8,13 +8,6 @@ import inject from '@/plugins/inject'
 Vue.config.productionTip = false
 inject.install(Vue)
 
-/* eslint-disable no-new */
-// new Vue({
-//     el: '#app',
-//     router,
-//     components: { App },
-//     template: '<App/>'
-// })
 new Vue({
     router,
     render: h => h(App)

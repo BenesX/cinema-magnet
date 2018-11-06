@@ -31,6 +31,11 @@ export const createRandomNumber = (num, maxNum) => {
     return arr;
 }
 
+
+/**
+ * put local img to base64
+ * @param {string} img img local path 
+ */
 export const getBase64 = (img) => {
     function getBase64Image(img, width, height) {//width、height调用时传入具体像素值，控制大小 ,不传则默认图像大小
         var canvas = document.createElement("canvas");
@@ -50,4 +55,17 @@ export const getBase64 = (img) => {
             resolve(getBase64Image(image));//将base64传给done上传处理
         }
     });
+}
+
+/**
+ * 节流
+ * @param {function} fn 回调
+ * @param {number} time 频率(ms)
+ * @param {Object} e 回调函数参数
+ */
+export const throttle = (fn, time, e) => {
+    clearTimeout(fn.tId)
+    fn.tId = setTimeout(() => {
+        fn(e)
+    }, time)
 }
