@@ -1,4 +1,5 @@
 const Controller = require('egg').Controller;
+const Iconv = require('iconv-lite')
 
 class MovieController extends Controller {
     async index () {
@@ -17,6 +18,9 @@ class MovieController extends Controller {
             }
             case 'animation': {
                 return await this.animation(page);
+            }
+            case 'classical': {
+                return await this.classical(page);
             }
         }
     }
@@ -44,8 +48,17 @@ class MovieController extends Controller {
         ctx.body = { res: res, success: true, page };
     }
 
-    async search () {
+    async classical (page) {
+        const { ctx, service } = this;
+        const res = await service.movie.classical(page);
+    }
 
+    async search () {
+        const { ctx, service } = this;
+        const keyword = ctx.params.keyword;
+        // TODO: 无论是GBK UTF 都无法和dyttde搜索匹配得上
+        const res = await service.movie.search(Iconv.encode(keyword, 'GBK'));
+        ctx.body = { res: res, success: true };
     }
 }
 

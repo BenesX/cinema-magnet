@@ -9,11 +9,15 @@ module.exports = appInfo => {
 	// add your config here
 	config.middleware = ['errorHandler'];
 
-	config.dyttReptileSite = 'http://www.dytt8.net';
+	config.dyttReptileSite = 'https://www.dytt8.net';
+
+	config.dyttSearchReptileSite = 'http://s.ygdy8.com/plus/so.php'
 
 	config.xh127ReptileSite = 'http://www.xh127.com';
 
 	config.movieDogReptileSite = 'https://www.dydog.org';
+
+	config.sunMovieReptileSite = 'http://www.ygdy8.com';
 
 	config.redis = {
 		client: {

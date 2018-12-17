@@ -8,8 +8,8 @@ const MOVIE_TYPE_LIST = [
         desc: '日韩'
     },
     {
-        type: 'hk',
-        desc: '港片'
+        type: 'west',
+        desc: '欧美'
     },
     {
         type: 'animation',

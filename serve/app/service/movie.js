@@ -20,11 +20,24 @@ class MovieService extends Service {
         return res;
     }
 
+    async classical (page) {
+        const url = `${this.config.sunMovieReptileSite}/html/gndy/jddy/20160320/50541${page != 1 ? '_' + page : ''}.html`;
+        const res = await this._searchDytt(url);
+        return res;
+    }
+
     async animation (page) {
         // const url = `${this.config.xh127ReptileSite}/thread-19-${page}`;
         // const res = await this._searchXh127(url);
         const url = `${this.config.movieDogReptileSite}/list/9/2/${page}/`;
         const res = await this._searchMovieDog(url);
+        return res;
+    }
+
+    async search (keyword) {
+        const url = `${this.config.dyttSearchReptileSite}?typeid=1&keyword=${encodeURI(keyword)}`;
+        console.log('url', url);
+        const res = await this._searchDytt(url);
         return res;
     }
 

@@ -3,9 +3,10 @@
 module.exports = (option, app) => {
     return async function movieCache(ctx, next) {
         const { service } = ctx;
-        const movieType = ctx.params.type;
-        const moviePage = ctx.params.page;
-        const key = `movie-${movieType}-${moviePage}`;
+        const movieType = ctx.params.type || 'common';
+        const moviePage = ctx.params.page || '0';
+        const keyword = ctx.params.keyword || 'no';
+        const key = `movie-${movieType}-${moviePage}-${keyword}`;
         const movieList = await service.cache.get(key);
         if (movieList && movieList.length > 0) {
             ctx.body = {

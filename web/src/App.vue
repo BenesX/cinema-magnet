@@ -1,5 +1,8 @@
 <template>
     <div id="app">
+        <div class="loading-con">
+            <LoadingVue v-show="!isLoadComp"/>
+        </div>
         <div class="m-con">
             <transition name="fade">
                 <div v-show="isShowing" class="m-con-bg" :style="{backgroundImage: `url(${bgImg})`}"></div>
@@ -8,6 +11,7 @@
               class="m-con-head"
               :movieType="currMovieType"
               @switchMovieType="reqMovieList"
+              v-show="!isShowing"
             />
             <div 
               class="m-close-btn" 
@@ -41,6 +45,7 @@
 import Header from '@/components/Header-Comp'
 import MovieList from '@/components/Movie-List-Comp'
 import MovieInfo from '@/components/movie-Info-Comp'
+import LoadingVue from './components/Loading.vue';
 
 export default {
     name: 'App',
@@ -83,7 +88,10 @@ export default {
         }
     },
     components: {
-        Header, MovieList, MovieInfo
+        Header,
+        MovieList,
+        MovieInfo,
+        LoadingVue
     }
 }
 </script>
@@ -138,6 +146,7 @@ body {
         width: 100%;
         height: 100%;
         background-size: cover;
+        background-position: 50% center;
         z-index: 4;
     }
 }
@@ -169,5 +178,11 @@ body {
         padding-right: 10px;
         z-index: 3;
     }
+}
+
+.loading-con {
+    position: absolute;
+    top: 5px;
+    right: 10px;
 }
 </style>
