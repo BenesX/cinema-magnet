@@ -1,5 +1,5 @@
 <template>
-    <div class="m-info" :class="addAni && 'm-info-active'" v-show="!hide">
+    <div class="m-info" :class="addAni && 'm-info-active'" v-show="!hide" ref="mInfo">
         <div class="m-info-head" :class="addAni && 'm-info-head-active'">
             <h1 v-html="movieInfo.movie_title"></h1>
         </div>
@@ -24,12 +24,14 @@ export default {
     watch: {
         isShow () {
             if (this.isShow) {
-                this.hide = false;
+                this.hide = false
+                
                 setTimeout(() => {
                     this.addAni = true
                 }, 100)
             } else {
                 this.addAni = false
+                this.$refs.mInfo.scrollTop = 0
                 setTimeout(() => {
                     this.hide = true
                 }, 100);
