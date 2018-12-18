@@ -69,3 +69,11 @@ export const throttle = (fn, time, e) => {
         fn(e)
     }, time)
 }
+
+export const banWindowGoback = (cb) => {
+    history.pushState(null, null, document.URL)
+    window.addEventListener('popstate', function () {
+        history.pushState(null, null, document.URL)
+        cb()
+    })
+}

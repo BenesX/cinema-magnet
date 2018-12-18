@@ -5,32 +5,36 @@
         </div>
         <div class="m-con">
             <transition name="fade">
-                <div v-show="isShowing" class="m-con-bg" :style="{backgroundImage: `url(${bgImg})`}"></div>
+                <div 
+                  v-show="isShowing" 
+                  class="m-con-bg" 
+                  :style="{backgroundImage: `url(${bgImg})`}" 
+                  @click="close"
+                  />
             </transition>
-            <Header 
-              class="m-con-head"
-              :movieType="currMovieType"
-              @switchMovieType="reqMovieList"
-              v-show="!isShowing"
-            />
-            <div 
-              class="m-close-btn" 
-              @click="close"
-              v-if="isShowing"
-            >X</div>
+            <transition name="slide-top">
+                <Header     
+                class="m-con-head"
+                :movieType="currMovieType"
+                @switchMovieType="switchMovieType"
+                :isShowing="isShowing"
+                v-show="!isShowing"
+                />
+            </transition>
             <div class="m-content">
                 <div class="m-content-title" :class="isShowing && 'm-content-title-active'">
-                    <h1>Best</h1>
-                    <h1>Moive</h1>
+                    <h1>{{ bigTitle }}</h1>
+                    <h1>{{ smTitle }}</h1>
                 </div>
                 <div class="m-content-list">
                     <movie-list 
                       @showInfo="showInfo"
-                      @reachRigth="reqMovieList"
+                      @reachRight="switchMovieType"
                       :isShowInfo="isShowing" 
                       :movie-list="currMovieList"
                     />
                 </div>
+                
                 <movie-info 
                   :isShow="isShowing" 
                   :movie-info="movieInfo" 
@@ -44,8 +48,10 @@
 <script>
 import Header from '@/components/Header-Comp'
 import MovieList from '@/components/Movie-List-Comp'
-import MovieInfo from '@/components/movie-Info-Comp'
-import LoadingVue from './components/Loading.vue';
+import MovieInfo from '@/components/Movie-Info-Comp'
+import LoadingVue from '@/components/Loading'
+import { BIG_TITLE, SM_TITLE } from './config/config.site'
+import { banWindowGoback } from './utils';
 
 export default {
     name: 'App',
@@ -57,22 +63,38 @@ export default {
             currMovieType: '', // 当前展示电影类型
             bgImg: '', // 背景图片
             opa: 0, // 背景图片透明度
-            isLoadComp: true // 是否在加载数据
+            isLoadComp: true, // 是否数据加载完毕,
+            bigTitle: Object.freeze(BIG_TITLE),
+            smTitle: Object.freeze(SM_TITLE)
         }
     },
+    components: {
+        Header,
+        MovieList,
+        MovieInfo,
+        LoadingVue
+    },
     methods: {
-        async reqMovieList (params = {}) {
-            if(!this.isLoadComp) return
+        switchMovieType (params = {}) {
+            if (!this.isLoadComp) return
+
             this.isLoadComp = false
-            const { movieType } = params;
+            const { movieType } = params
+
             if (movieType) {
                 this.currMovieType = movieType
                 this.page = 0
                 this.currMovieList = []
             }
-            const res = await this.$api.IndexService.getMovieList(this.currMovieType, ++this.page)
+
+            this.reqMovieList();
+        },
+        async reqMovieList () {
+            const page = this.page + 1;
+            const res = await this.$api.IndexService.getMovieList(this.currMovieType, page)
             if (res.res) {
                 this.currMovieList = this.currMovieList.concat(res.res)
+                this.page++
             }
             this.isLoadComp = true
         },
@@ -87,11 +109,10 @@ export default {
             this.isShowing = false
         }
     },
-    components: {
-        Header,
-        MovieList,
-        MovieInfo,
-        LoadingVue
+    created () {
+        banWindowGoback(() => {
+            this.isShowing = false
+        })
     }
 }
 </script>
@@ -113,6 +134,13 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     color: #2c3e50;
+}
+.slide-top-enter-active, .slide-top-leave-active {
+    transition: all .2s;
+}
+.slide-top-enter, .slide-top-leave-to {
+    transform: translateY(-30px);
+    opacity: 0;
 }
 .fade-enter-active, .fade-leave-active {
   transition: opacity .2s;
@@ -136,8 +164,9 @@ body {
     }
     .m-con-info {
         position: absolute;
-        left: 15px;
+        left: 5vw;
         z-index: 6;
+        width: 35vw;
     }
     .m-con-bg {
         position: absolute;
@@ -182,7 +211,36 @@ body {
 
 .loading-con {
     position: absolute;
+    z-index: 999;
     top: 5px;
     right: 10px;
+}
+
+@media screen and (max-width: 680px) {
+    .m-content {
+        padding-left: 10px;
+        .m-content-title {
+            display: none;
+        }
+    }
+    .m-con {
+        position: relative;
+        top: 0vh;
+        left: 0vw;
+        width: 100vw;
+        height: 100vh;
+        border-radius: 0;
+        .m-con-info {
+            width: 83%;
+        }
+    }
+    .loading-con {
+        top: auto;
+        bottom: 20px;
+        left: 50%;
+        width: 40px;
+        height: 40px;
+        transform: translateX(-50%);
+    }
 }
 </style>

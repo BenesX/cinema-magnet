@@ -72,4 +72,15 @@ export default {
         }
     }
 }
+
+@media screen and (max-width: 680px) {
+    .m-title {
+        display: none;
+    }
+    .m-nav {
+        ul {
+            padding: 0;
+        }
+    }
+}
 </style>

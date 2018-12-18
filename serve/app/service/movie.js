@@ -52,6 +52,7 @@ class MovieService extends Service {
         for (let i = 0; i < links.length; i++) {
             const cres = await this.ctx.helper.loadSuperagent(this.config.dyttReptileSite + links[i]);
             const $ = cheerio.load(cres.text);
+            const movie_title = $('.title_all font').html();
             const $zoom = $('#Zoom');
             const movie_post = $zoom.find('img').eq(0).attr('src');
             let desc_html = '';
@@ -64,7 +65,7 @@ class MovieService extends Service {
             const movie_desc = handleDesc.join('<br>');
             const movie_magnet = $zoom.find('p').eq(0).find('a').attr('href');
             const movie_ftp = $zoom.find('table a').eq(0).text();
-            movie_list.push({ movie_post, movie_desc, movie_magnet, movie_ftp });
+            movie_list.push({ movie_post, movie_desc, movie_magnet, movie_ftp, movie_title });
         };
         movie_list = movie_list.filter(item => item.movie_magnet || item.movie_ftp)
         return movie_list;
@@ -105,9 +106,11 @@ class MovieService extends Service {
         const res = await this.ctx.helper.loadSuperagent(url);
         const $ = cheerio.load(res.text);
         const links = [];
+        const titles = [];
         let movie_list = [];
         $('.listbox .listbox-entry .entry h2 a').each((i, m) => {
             links.push($(m).attr('href'));
+            titles
         })
         let supereneArr = []
         for (let i = 0; i < links.length; i++) {
@@ -117,12 +120,13 @@ class MovieService extends Service {
                 res.map(item => {
                     const $ = cheerio.load(item.text);
                     const $zoom = $('.textbox-content');
+                    const movie_title = $('.textbox-title a').html();
                     const movie_post = $zoom.find('img').eq(0).attr('src');
                     let descArr = $zoom.html().match(/<\/center>(.+)<div class="quote downloadbox">/);
                     const movie_desc = descArr && descArr[1] || '';
                     const fid = this.ctx.helper.getQueryString($zoom.find('.quote-content').find('a').eq(0).attr('href'), 'fid');
                     const movie_magnet = `${this.config.movieDogReptileSite}/attachment.php?fid=${fid}`;
-                    movie_list.push({ movie_post, movie_magnet, movie_desc })
+                    movie_list.push({ movie_post, movie_magnet, movie_desc, movie_title })
                 })
                 supereneArr = [];
             }

@@ -1,11 +1,11 @@
 <template>
     <div class="m-info" :class="addAni && 'm-info-active'" v-show="!hide">
         <div class="m-info-head" :class="addAni && 'm-info-head-active'">
-            <!-- <h1 v-html="movieInfo.movie_title"></h1> -->
+            <h1 v-html="movieInfo.movie_title"></h1>
         </div>
         <div class="m-info-content">
-            <p>magnet: <input type="text" v-model="movieInfo.movie_magnet"><a>复制</a></p>
-            <p v-if="movieInfo.movie_ftp">ftp: <input type="text" v-model="movieInfo.movie_ftp"><a>复制</a></p>
+            <p>magnet: <input type="text" ref="magInput" v-model="movieInfo.movie_magnet" readonly><a @click="copyMag">复制</a></p>
+            <p v-if="movieInfo.movie_ftp">ftp: <input type="text" ref="ftpInput" v-model="movieInfo.movie_ftp" readonly><a @click="copyFtp">复制</a></p>
             <div class="m-info-desc" v-html="movieInfo.movie_desc"></div>
         </div>
     </div>
@@ -35,19 +35,28 @@ export default {
                 }, 100);
             }
         }
+    },
+    methods: {
+        copyMag () {
+            this.$refs.magInput.select()
+            document.execCommand("copy")
+        },
+        copyFtp () {
+            this.$refs.ftpInput.select()
+            document.execCommand("copy")
+        }
     }
 }
 </script>
 
 <style lang="less">
 .m-info {
-    width: 35vw;
     height: 65vh;
     padding: 15px;
     border-radius: 10px;
     background: rgba(255, 255, 255, .5);
     overflow-y: scroll;
-    transition: all .2s;
+    transition: all .4s;
     transform: translateY(60px);
     opacity: 0;
     &.m-info-active {
@@ -56,7 +65,7 @@ export default {
     }
     .m-info-head {
         transform: translateY(-50px);
-        transition: all .2s;
+        transition: all .4s;
         opacity: 0;
         &.m-info-head-active {
             transform: translateY(0px);

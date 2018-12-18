@@ -17,6 +17,12 @@ const MOVIE_TYPE_LIST = [
     }
 ]
 
+const BIG_TITLE = 'Best'
+
+const SM_TITLE = 'Movie'
+
 export {
-    MOVIE_TYPE_LIST
+    MOVIE_TYPE_LIST,
+    BIG_TITLE,
+    SM_TITLE
 }
