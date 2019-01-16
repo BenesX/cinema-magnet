@@ -11,8 +11,7 @@ module.exports = (option, app) => {
             const status = ctx.status || 500;
             const error_msg = status === 500 && app.config.env === 'prod'
                 ? 'Internal Server Error'
-                : err.message;
-
+                : app.config.env === 'prod' ? 'System Error' : err.message;
             ctx.body = { error_msg };
             ctx.body.success = false;
             if (status === 422) {

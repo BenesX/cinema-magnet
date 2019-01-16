@@ -28,7 +28,12 @@ module.exports = appInfo => {
 		}
 	};
 
-	config.security = {
+	config.bodyParser = {
+		jsonLimit: '10mb',
+		formLimit: '10mb'
+	};
+
+	config.security = {	
 		csrf: {
 			enable: false,
 			ignoreJSON: true
