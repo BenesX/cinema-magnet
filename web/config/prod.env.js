@@ -1,6 +1,7 @@
+const utils = require('../build/utils')
 'use strict'
-const API = process.argv.splice(3)[0].split('=')[1] || 'prod';
-
+const args = '?' + process.argv.slice(3).join('&');
+const API = utils.getQueryByName('API', args);
 module.exports = {
   NODE_ENV: '"production"',
   API: `"${API}"`
